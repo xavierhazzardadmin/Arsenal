@@ -6,13 +6,25 @@ import (
 	"os/signal"
 	"syscall"
 
+	embed "github.com/Clinet/discordgo-embed"
 	"github.com/bwmarrin/discordgo"
+	dotenv "github.com/joho/godotenv"
 )
 
 func main() {
 
 	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
+	token := os.Getenv("TOKEN")
+
+	if token == "" {
+		err := dotenv.Load(".env")
+		if err != nil {
+			panic("Cannot start server, no token available")
+		}
+		token = os.Getenv("TOKEN")
+	}
+
+	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
@@ -65,6 +77,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if m.Content == "bruh" {
-		s.ChannelMessageSend(m.ChannelID, "https://biographyhub.com/wp-content/uploads/2021/04/Arsenal-RL.jpg")
+		imgEmbed := embed.NewEmbed().SetImage("https://biographyhub.com/wp-content/uploads/2021/04/Arsenal-RL.jpg").MessageEmbed
+		s.ChannelMessageSendEmbed(m.ChannelID, imgEmbed)
 	}
 }
