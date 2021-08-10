@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"html"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -50,6 +53,12 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+
+	http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	})
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
 	// Cleanly close down the Discord session.
 	dg.Close()
