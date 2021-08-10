@@ -9,8 +9,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// Variables used for command line parameters
-
 func main() {
 
 	// Create a new Discord session using the provided bot token.
