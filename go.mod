@@ -1,4 +1,4 @@
-module main
+module bot
 
 go 1.14
 
